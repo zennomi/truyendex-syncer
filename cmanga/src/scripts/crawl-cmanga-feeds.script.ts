@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import {
-  getJsonData,
+  delay,
+  getCloudflareJsonData,
   mongooseWrapper,
-  parseJsonFromPage,
   realBrowser,
 } from "@/utils";
 
@@ -15,11 +15,17 @@ const main = async () => {
 
   const { browser, page } = await realBrowser();
 
+  await page.goto("https://cmangam.com", {
+    waitUntil: "networkidle2",
+  });
+
+  await delay(5);
+
   let paramsPage = 1;
   const limit = 1000;
   while (true) {
     // Extract the JSON content
-    const jsonData = await getJsonData<{
+    const jsonData = await getCloudflareJsonData<{
       data: { id_album: string; info: string }[];
       total: number;
     }>(
@@ -30,13 +36,16 @@ const main = async () => {
     const result = await collection.bulkWrite(
       jsonData.data
         .map((manga) => JSON.parse(manga.info))
-        .map((mangaInfo: { id: number }) => ({
-          updateOne: {
-            filter: { _id: mangaInfo.id as any },
-            update: { $set: { ...mangaInfo, _id: mangaInfo.id } },
-            upsert: true,
-          },
-        }))
+        .map((mangaInfo: { id: number }) => {
+          const id = mangaInfo.id.toString();
+          return {
+            updateOne: {
+              filter: { _id: id as any },
+              update: { $set: { ...mangaInfo, _id: id, id } },
+              upsert: true,
+            },
+          };
+        })
     );
     console.log("insertedCount:", result.insertedCount);
     console.log("upsertedCount:", result.upsertedCount);

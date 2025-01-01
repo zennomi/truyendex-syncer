@@ -1,4 +1,5 @@
 import { connect, PageWithCursor } from "puppeteer-real-browser";
+import { delay } from ".";
 
 export const realBrowser = () =>
   connect({
@@ -18,22 +19,31 @@ export const realBrowser = () =>
     ignoreAllFlags: false,
   });
 
-export async function parseJsonFromPage<T>(page: PageWithCursor) {
-  return (await page.evaluate(() => {
-    return JSON.parse(document.body.innerText);
-  })) as T;
-}
-
-export async function getJsonData<T>(url: string, page: PageWithCursor) {
+export async function getCloudflareData(
+  url: string,
+  page: PageWithCursor,
+  config?: { delay: number }
+) {
   await page.goto(url, {
     waitUntil: "networkidle2",
   });
 
-  // delay 5s
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // delay in seconds
+  if (config?.delay) await delay(config.delay);
 
+  return await page.evaluate(() => {
+    return document.body.innerText;
+  });
+}
+
+export async function getCloudflareJsonData<T>(
+  url: string,
+  page: PageWithCursor,
+  config?: { delay: number }
+) {
   // Extract the JSON content
-  const jsonData = await parseJsonFromPage<T>(page);
+  const data = await getCloudflareData(url, page, config);
+  const jsonData = JSON.parse(data) as T;
 
   return jsonData;
 }
