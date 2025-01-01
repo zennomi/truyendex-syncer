@@ -391,6 +391,7 @@ __metadata:
     dotenv: "npm:^16.4.7"
     https-proxy-agent: "npm:^7.0.6"
     lodash: "npm:^4.17.21"
+    mangadex-full-api: "npm:^6.0.0"
     mongoose: "npm:^8.9.3"
     puppeteer: "npm:^23.11.1"
     puppeteer-real-browser: "npm:^1.3.22"
@@ -949,6 +950,13 @@ __metadata:
   version: 7.18.3
   resolution: "lru-cache@npm:7.18.3"
   checksum: 10c0/b3a452b491433db885beed95041eb104c157ef7794b9c9b4d647be503be91769d11206bb573849a16b4cc0d03cbd15ffd22df7960997788b74c1d399ac7a4fed
+  languageName: node
+  linkType: hard
+
+"mangadex-full-api@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "mangadex-full-api@npm:6.0.0"
+  checksum: 10c0/8488835713430a721341d1500412d26550d6fbc89dbd536721c6eeb5ef17c0e394b039748d463c51c81d83f13d68d98ec56bf3a0d612cec31392d21699652d90
   languageName: node
   linkType: hard
 

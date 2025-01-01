@@ -12,3 +12,6 @@ export const mongooseWrapper = (func: Function) => {
       func();
     });
 };
+
+export const getMongooseCollection = (name: string) =>
+  mongoose.connection.collection(name);
