@@ -1,0 +1,7 @@
+{
+  "name": "cmanga",
+  "packageManager": "yarn@4.2.2",
+  "dependencies": {
+    "mongoose": "^8.9.3"
+  }
+}
