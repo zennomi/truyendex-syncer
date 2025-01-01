@@ -1,16 +1,5 @@
 import mongoose from "mongoose";
-import { connect } from "puppeteer-real-browser";
-import config from "@/config";
-
-mongoose
-  .connect(
-    `mongodb://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.MONGO_HOST}:${config.MONGO_PORT}/${config.MONGO_DATABASE}`
-  )
-  .then(() => {
-    console.info("Mongo connected");
-
-    main();
-  });
+import { mongooseWrapper, parseJsonFromPage, realBrowser } from "@/utils";
 
 // sudo apt-get install xvfb
 // warp
@@ -19,28 +8,8 @@ const main = async () => {
 
   const collection = db.collection("cmanga_mangas");
 
-  const { browser, page } = await connect({
-    headless: false,
+  const { browser, page } = await realBrowser();
 
-    args: [],
-
-    customConfig: {
-      chromePath: "/usr/bin/google-chrome",
-    },
-
-    turnstile: true,
-
-    connectOption: {},
-
-    disableXvfb: false,
-    ignoreAllFlags: false,
-  });
-
-  // Set an arbitrary large viewport to fit all data
-  await page.setViewport({
-    width: 1920,
-    height: 5000, // Large height to contain all rows
-  });
   let paramsPage = 1;
   const limit = 1000;
   while (true) {
@@ -54,12 +23,10 @@ const main = async () => {
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     // Extract the JSON content
-    const jsonData = (await page.evaluate(() => {
-      return JSON.parse(document.body.innerText);
-    })) as {
+    const jsonData = await parseJsonFromPage<{
       data: { id_album: string; info: string }[];
       total: number;
-    };
+    }>(page);
 
     const result = await collection.bulkWrite(
       jsonData.data
@@ -81,3 +48,5 @@ const main = async () => {
   }
   await browser.close();
 };
+
+mongooseWrapper(main);
