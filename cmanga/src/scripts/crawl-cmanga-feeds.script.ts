@@ -5,13 +5,14 @@ import {
   mongooseWrapper,
   realBrowser,
 } from "@/utils";
+import { COLLECTION_NAME } from "@/constants";
 
 // sudo apt-get install xvfb
 // warp
 const main = async () => {
   const db = mongoose.connection;
 
-  const collection = db.collection("cmanga_mangas");
+  const collection = db.collection(COLLECTION_NAME.CMANGA_MANGA);
 
   const { browser, page } = await realBrowser();
 
@@ -49,6 +50,7 @@ const main = async () => {
     );
     console.log("insertedCount:", result.insertedCount);
     console.log("upsertedCount:", result.upsertedCount);
+    console.log("modifiedCount:", result.modifiedCount);
 
     if (limit * paramsPage > jsonData.total) break;
 

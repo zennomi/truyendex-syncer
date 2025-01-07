@@ -1,3 +1,4 @@
+import { COLLECTION_NAME } from "@/constants";
 import {
   delay,
   getCloudflareData,
@@ -14,7 +15,7 @@ import mongoose from "mongoose";
 const main = async () => {
   const db = mongoose.connection;
 
-  const collection = db.collection("cmanga_mangas");
+  const collection = db.collection(COLLECTION_NAME.CMANGA_MANGA);
 
   const { browser, page } = await realBrowser();
 

@@ -1,8 +1,9 @@
+import { COLLECTION_NAME } from "@/constants";
 import { getMongooseCollection, mongooseWrapper } from "@/utils";
 import { last } from "lodash";
 import { Manga } from "mangadex-full-api";
 const main = async () => {
-  const collection = getMongooseCollection("mangadex_mangas");
+  const collection = getMongooseCollection(COLLECTION_NAME.MANGADEX_MANGA);
   //   let latestCreatedAt = "2018-02-22T03:14:14";
   let latestCreatedAt = "2018-02-22T03:14:14";
   while (true) {
