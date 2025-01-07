@@ -11,6 +11,7 @@ const createConfigFromEnvironment = (environment: NodeJS.ProcessEnv) => {
     MONGO_PASSWORD: z.string(),
     MONGO_HOST: z.string().default("127.0.0.1"),
     MONGO_PORT: z.number(),
+    PROXY_BACKEND_URL: z.string().default("http://localhost:3000"),
   });
 
   return {
