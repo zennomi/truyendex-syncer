@@ -1,17 +1,19 @@
-import { COLLECTION_NAME } from "@/constants";
+import { MONGODB_COLLECTION_NAME } from "@/constants";
 import { getMongooseCollection, mongooseWrapper } from "@/utils";
 import { last } from "lodash";
 import { Manga } from "mangadex-full-api";
 const main = async () => {
-  const collection = getMongooseCollection(COLLECTION_NAME.MANGADEX_MANGA);
-  //   let latestCreatedAt = "2018-02-22T03:14:14";
-  let latestCreatedAt = "2018-02-22T03:14:14";
+  const collection = getMongooseCollection(
+    MONGODB_COLLECTION_NAME.MANGADEX_MANGA
+  );
+  //   let latestUpdatedAt = "2018-02-22T03:14:14";
+  let latestUpdatedAt = "2018-02-22T03:14:14";
   while (true) {
-    console.log(latestCreatedAt);
+    console.log(latestUpdatedAt);
     const titles = await Manga.search({
-      order: { createdAt: "asc" },
+      order: { updatedAt: "asc" },
       contentRating: ["pornographic"],
-      createdAtSince: latestCreatedAt,
+      updatedAtSince: latestUpdatedAt,
       limit: 100,
     });
 
@@ -31,7 +33,7 @@ const main = async () => {
 
     if (titles.length <= 1) break;
 
-    latestCreatedAt = last(titles)!.createdAt.toISOString().slice(0, 19);
+    latestUpdatedAt = last(titles)!.updatedAt.toISOString().slice(0, 19);
   }
 };
 

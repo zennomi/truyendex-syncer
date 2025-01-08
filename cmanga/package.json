@@ -2,6 +2,7 @@
   "name": "cmanga",
   "packageManager": "yarn@4.2.2",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.17.0",
     "@typegoose/typegoose": "^12.10.1",
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",

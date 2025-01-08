@@ -1,4 +1,4 @@
-import { COLLECTION_NAME } from "@/constants";
+import { MONGODB_COLLECTION_NAME } from "@/constants";
 import {
   getCloudflareJsonData,
   getMongooseCollection,
@@ -6,13 +6,13 @@ import {
   realBrowser,
 } from "@/utils";
 
-const START_ID = 1;
+const START_ID = 654;
 const END_ID = 3000;
 const SKIP_EXISTED = true;
 
 const main = async () => {
   const cuuTruyenCollection = getMongooseCollection(
-    COLLECTION_NAME.CUUTRUYEN_MANGA
+    MONGODB_COLLECTION_NAME.CUUTRUYEN_MANGA
   );
 
   const { browser, page } = await realBrowser();
@@ -26,6 +26,10 @@ const main = async () => {
       const { data: detailedManga } = await getCloudflareJsonData<{
         data: any;
       }>(`https://cuutruyen.net/api/v2/mangas/${strId}`, page);
+      if (!detailedManga) {
+        console.warn(`Not found `, strId);
+        continue;
+      }
       await cuuTruyenCollection.updateOne(
         { _id: strId as any },
         { $set: { ...detailedManga, _id: strId, strId } },

@@ -1,4 +1,4 @@
-import { COLLECTION_NAME } from "@/constants";
+import { MONGODB_COLLECTION_NAME } from "@/constants";
 import { getModelForClass, Prop } from "@typegoose/typegoose";
 
 export class CmangaManga {
@@ -16,5 +16,5 @@ export class CmangaManga {
 }
 
 export const CmangaMangaModel = getModelForClass(CmangaManga, {
-  schemaOptions: { collection: COLLECTION_NAME.CMANGA_MANGA },
+  schemaOptions: { collection: MONGODB_COLLECTION_NAME.CMANGA_MANGA },
 });

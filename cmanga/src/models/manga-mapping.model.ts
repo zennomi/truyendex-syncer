@@ -1,4 +1,4 @@
-import { COLLECTION_NAME } from "@/constants";
+import { MONGODB_COLLECTION_NAME, MANGA_SOURCE } from "@/constants";
 import {
   getModelForClass,
   Prop,
@@ -9,8 +9,8 @@ import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 
 @modelOptions({ schemaOptions: { _id: false } })
 class ProviderMapping {
-  @Prop({ required: true, enum: ["CMANGA", "MANGADEX"] })
-  providerType!: "CMANGA" | "MANGADEX";
+  @Prop({ required: true, enum: MANGA_SOURCE })
+  providerType!: MANGA_SOURCE;
 
   @Prop({ required: true })
   sourceId!: string;
@@ -32,7 +32,7 @@ export class MangaMapping extends TimeStamps {
 
   static async findByProvider(
     this: ReturnModelType<typeof MangaMapping>,
-    providerType: "CMANGA" | "MANGADEX",
+    providerType: MANGA_SOURCE,
     sourceId: string
   ) {
     return this.findOne({
@@ -42,5 +42,5 @@ export class MangaMapping extends TimeStamps {
 }
 
 export const MangaMappingModel = getModelForClass(MangaMapping, {
-  schemaOptions: { collection: COLLECTION_NAME.MANGA_MAPPING },
+  schemaOptions: { collection: MONGODB_COLLECTION_NAME.MANGA_MAPPING },
 });
