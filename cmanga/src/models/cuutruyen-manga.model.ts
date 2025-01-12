@@ -19,6 +19,9 @@ export class CuuTruyenManga {
 
   @Prop({ required: true })
   titles!: Title[];
+
+  @Prop({ default: false })
+  mapped?: boolean;
 }
 
 export const CuuTruyenMangaModel = getModelForClass(CuuTruyenManga, {

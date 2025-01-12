@@ -6,7 +6,7 @@ import {
   realBrowser,
 } from "@/utils";
 
-const START_ID = 654;
+const START_ID = 0;
 const END_ID = 3000;
 const SKIP_EXISTED = true;
 
@@ -19,7 +19,7 @@ const main = async () => {
   for (let i = START_ID; i <= END_ID; i++) {
     const strId = i.toString();
     if (SKIP_EXISTED) {
-      if (await cuuTruyenCollection.findOne({ id: strId })) continue;
+      if (await cuuTruyenCollection.findOne({ _id: strId as any })) continue;
     }
     console.info(`Crawling `, strId);
     try {
@@ -32,7 +32,7 @@ const main = async () => {
       }
       await cuuTruyenCollection.updateOne(
         { _id: strId as any },
-        { $set: { ...detailedManga, _id: strId, strId } },
+        { $set: { ...detailedManga, _id: strId, id: strId } },
         { upsert: true }
       );
     } catch (error) {

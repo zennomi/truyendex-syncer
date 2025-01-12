@@ -130,7 +130,29 @@ export async function indexMangaTitles(
 }
 
 export async function searchMangaTitles(query: string) {
-  return await elasticClient.search({
+  // phrase case
+  let result = await elasticClient.search({
+    index: ES_INDEX_NAME.MANGA_TITLE,
+    query: {
+      nested: {
+        path: "titles",
+        query: {
+          match_phrase: {
+            "titles.title": query,
+          },
+        },
+        score_mode: "max", // Use the best score from any array element
+      },
+    },
+    sort: [{ _score: { order: "desc" } }, { createdAt: { order: "desc" } }],
+    size: 1,
+  });
+  if (result.hits.hits.length > 0) {
+    return { hit: result.hits.hits[0], mode: "match_phrase" };
+  }
+
+  // match
+  result = await elasticClient.search({
     index: ES_INDEX_NAME.MANGA_TITLE,
     query: {
       nested: {
@@ -143,6 +165,33 @@ export async function searchMangaTitles(query: string) {
         score_mode: "max", // Use the best score from any array element
       },
     },
+    explain: true,
     sort: [{ _score: { order: "desc" } }, { createdAt: { order: "desc" } }],
+    size: 1,
   });
+
+  if (result.hits.hits.length > 0) {
+    // threhold is 20
+    if (!result.hits.hits[0]._score || result.hits.hits[0]._score <= 33)
+      return null;
+
+    const analyzeResult = await elasticClient.indices.analyze({
+      index: ES_INDEX_NAME.MANGA_TITLE,
+      text: query,
+      tokenizer: "standard",
+      filter: ["lowercase", "asciifolding", "unique"],
+    });
+
+    const tokenCount = analyzeResult.tokens?.length || 1;
+
+    if (
+      tokenCount -
+        (result.hits.hits[0]._explanation?.details[0].details?.length || 0) <=
+      3
+    ) {
+      return { hit: result.hits.hits[0], mode: "match" };
+    }
+
+    return null;
+  }
 }

@@ -83,6 +83,9 @@ export class MangaDexManga {
   @Prop({ required: true })
   tags!: string[];
 
+  @Prop({ required: false })
+  normalizedTitles?: string[];
+
   @Prop({ required: true })
   createdAt!: Date;
 

@@ -7,6 +7,7 @@ export function delay(secs: number) {
 }
 
 export function normalizeString(str: string) {
+  str = str.trim();
   // Chuyển hết sang chữ thường
   str = str.toLowerCase();
 

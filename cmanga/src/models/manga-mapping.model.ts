@@ -17,8 +17,8 @@ class ProviderMapping {
 }
 
 export class MangaMapping extends TimeStamps {
-  @Prop({ required: true })
-  mangaId!: string;
+  @Prop({ required: false })
+  mangaId?: string;
 
   @Prop({ required: true })
   providers!: ProviderMapping[];
@@ -38,6 +38,32 @@ export class MangaMapping extends TimeStamps {
     return this.findOne({
       providers: { $elemMatch: { providerType, sourceId } },
     });
+  }
+
+  static async map(
+    this: ReturnModelType<typeof MangaMapping>,
+    from: { source: MANGA_SOURCE; sourceId: string },
+    to: { source: MANGA_SOURCE; sourceId: string }
+  ) {
+    let mapping = await this.findByProvider(from.source, from.sourceId);
+    if (!mapping) {
+      mapping = await this.create({
+        providers: [
+          {
+            providerType: from.source,
+            sourceId: from.sourceId,
+          },
+        ],
+      });
+    }
+    if (
+      mapping.providers.some(
+        (p) => p.sourceId === to.sourceId && p.providerType === to.source
+      )
+    )
+      return mapping;
+    mapping.providers.push({ providerType: to.source, sourceId: to.sourceId });
+    return await mapping.save();
   }
 }
 
