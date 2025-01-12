@@ -1,6 +1,10 @@
 import { MONGODB_COLLECTION_NAME } from "@/constants";
-import { getMongooseCollection, mongooseWrapper } from "@/utils";
-import { last } from "lodash";
+import {
+  getMongooseCollection,
+  mongooseWrapper,
+  normalizeString,
+} from "@/utils";
+import { flatten, last, union } from "lodash";
 import { Manga } from "mangadex-full-api";
 const main = async () => {
   const collection = getMongooseCollection(
@@ -22,7 +26,18 @@ const main = async () => {
         return {
           updateOne: {
             filter: { _id: title.id as any },
-            update: { $set: { ...title, tags: title.tags.map((t) => t.id) } },
+            update: {
+              $set: {
+                ...title,
+                normalizedTitles: union(
+                  [
+                    ...Object.values(title.title),
+                    ...flatten(title.altTitles.map((t) => Object.values(t))),
+                  ].map((t) => normalizeString(t))
+                ),
+                tags: title.tags.map((t) => t.id),
+              },
+            },
             upsert: true,
           },
         };
