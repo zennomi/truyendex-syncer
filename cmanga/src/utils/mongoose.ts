@@ -9,7 +9,9 @@ export const mongooseWrapper = (func: Function) => {
     .then(() => {
       console.info("Mongo connected");
 
-      func();
+      func().catch((error: any) => {
+        console.error(error);
+      });
     });
 };
 

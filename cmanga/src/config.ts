@@ -15,6 +15,7 @@ const createConfigFromEnvironment = (environment: NodeJS.ProcessEnv) => {
     ELASTICSEARCH_NODE: z.string().default("http://localhost:9200"),
     ELASTICSEARCH_USERNAME: z.string().default("elastic"),
     ELASTICSEARCH_PASSWORD: z.string().default("changeme"),
+    MILVUS_ADDRESS: z.string().default("localhost:19530"),
   });
 
   return {

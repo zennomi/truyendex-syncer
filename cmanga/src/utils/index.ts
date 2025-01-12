@@ -1,6 +1,7 @@
 export * from "./mongoose";
 export * from "./puppeteer";
-// export * from "./milvus";
+export * from "./embedding";
+export * from "./milvus";
 
 export function delay(secs: number) {
   return new Promise((resolve) => setTimeout(resolve, secs * 1000));

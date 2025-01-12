@@ -14,3 +14,7 @@ export enum MANGA_SOURCE {
   MANGADEX = "MANGADEX",
   CMANGA = "CMANGA",
 }
+
+export const MILVUS_COLLECTION_NAME = {
+  MANGA_TITLE: "manga_title",
+};
