@@ -38,6 +38,25 @@ class Title {
   @Prop({ required: false })
   ko?: string;
 }
+
+@modelOptions({ schemaOptions: { _id: false } })
+class RelatedManga {
+  @Prop({ required: true })
+  id!: string;
+}
+
+@modelOptions({ schemaOptions: { _id: false } })
+class RelatedMangaObject {
+  @Prop({ required: true })
+  main_story!: RelatedManga[];
+
+  @Prop({ required: true })
+  based_on!: RelatedManga[];
+
+  @Prop({ required: true })
+  adapted_from!: RelatedManga[];
+}
+
 @index(
   { noStemmingTitles: "text", stemmingTitles: "text" },
   { default_language: "none" }
@@ -55,11 +74,17 @@ export class MangaDexManga {
   @Prop({ required: true })
   altTitles!: Title[];
 
-  @Prop({ type: () => [String] })
-  stemmingTitles?: string[];
+  @Prop({ required: true })
+  relatedManga!: RelatedMangaObject;
 
-  @Prop({ type: () => [String] })
-  noStemmingTitles?: string[];
+  @Prop({ required: true })
+  contentRating!: string;
+
+  @Prop({ required: true })
+  tags!: string[];
+
+  @Prop({ required: true })
+  createdAt!: Date;
 
   public getTitles(this: DocumentType<MangaDexManga>): string[] {
     const object = this.toObject();

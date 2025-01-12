@@ -30,7 +30,7 @@ async function indexDocument<T>(index: string, id: string, document: T) {
   });
 }
 
-async function bulkInsert(index: string, documents: any[]) {
+export async function bulkInsert(index: string, documents: any[]) {
   // Prepare the bulk request body
   const operations = documents.flatMap((doc) => [
     { index: { _index: index, _id: doc._id } }, // Action to index the document
@@ -62,23 +62,22 @@ export async function createMangaTitleIndex(): Promise<void> {
         mappings: {
           properties: {
             titles: {
-              type: "text",
+              type: "nested", // Treat each array element as a nested document
+              properties: {
+                title: { type: "text" },
+              },
             },
-            titles_en: {
-              type: "text",
-              analyzer: "english",
+            isMainStory: {
+              type: "boolean",
             },
-            titles_ko: {
-              type: "text",
-              analyzer: "nori",
+            source: {
+              type: "keyword",
             },
-            titles_zh: {
-              type: "text",
-              analyzer: "smartcn",
+            sourceId: {
+              type: "keyword",
             },
-            titles_ja: {
-              type: "text",
-              analyzer: "kuromoji",
+            createdAt: {
+              type: "date",
             },
           },
         },
@@ -91,17 +90,20 @@ export async function createMangaTitleIndex(): Promise<void> {
 export async function indexMangaTitle(document: {
   source: MANGA_SOURCE;
   sourceId: string;
-  titles?: string[];
-  titles_vi?: string[];
-  titles_en?: string[];
-  titles_ko?: string[];
-  titles_zh?: string[];
-  titles_ja?: string[];
+  titles: string[];
+  createdAt: Date;
+  isMainStory: boolean;
 }) {
   return indexDocument(
     ES_INDEX_NAME.MANGA_TITLE,
     `${document.source}-${document.sourceId}`,
-    document
+    {
+      titles: document.titles.map((title) => ({ title })),
+      source: document.source,
+      sourceId: document.sourceId,
+      createdAt: document.createdAt,
+      isMainStory: document.isMainStory,
+    }
   );
 }
 
@@ -109,17 +111,21 @@ export async function indexMangaTitles(
   documents: {
     source: MANGA_SOURCE;
     sourceId: string;
-    titles?: string[];
-    titles_vi?: string[];
-    titles_en?: string[];
-    titles_ko?: string[];
-    titles_zh?: string[];
-    titles_ja?: string[];
+    titles: string[];
+    createdAt: Date;
+    isMainStory: boolean;
   }[]
 ) {
   return bulkInsert(
     ES_INDEX_NAME.MANGA_TITLE,
-    documents.map((doc) => ({ _id: `${doc.source}-${doc.sourceId}`, ...doc }))
+    documents.map((doc) => ({
+      _id: `${doc.source}-${doc.sourceId}`,
+      titles: doc.titles.map((title) => ({ title })),
+      source: doc.source,
+      sourceId: doc.sourceId,
+      createdAt: doc.createdAt,
+      isMainStory: doc.isMainStory,
+    }))
   );
 }
 
@@ -127,11 +133,16 @@ export async function searchMangaTitles(query: string) {
   return await elasticClient.search({
     index: ES_INDEX_NAME.MANGA_TITLE,
     query: {
-      multi_match: {
-        query: query,
-        fields: ["titles*"],
-        type: "phrase",
+      nested: {
+        path: "titles",
+        query: {
+          match: {
+            "titles.title": query,
+          },
+        },
+        score_mode: "max", // Use the best score from any array element
       },
     },
+    sort: [{ _score: { order: "desc" } }, { createdAt: { order: "desc" } }],
   });
 }

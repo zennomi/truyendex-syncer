@@ -17,33 +17,16 @@ mongooseWrapper(async () => {
     await indexMangaTitles(
       chunk.map((mangaDoc) => {
         const manga = mangaDoc.toObject();
-        const languages = ["en", "ko", "zh", "ja"];
-        const document: {
-          source: MANGA_SOURCE;
-          sourceId: string;
-          [key: string]: any;
-        } = {
+        const document = {
           source: MANGA_SOURCE.MANGADEX,
           sourceId: manga.id,
-          titles: [],
+          titles: mangaDoc.getTitles().map((title) => normalizeString(title)),
+          isMainStory:
+            mangaDoc.relatedManga.main_story.length === 0 &&
+            mangaDoc.relatedManga.based_on.length === 0 &&
+            !mangaDoc.tags.includes("b13b2a48-c720-44a9-9c77-39c9979373fb"), // doujinshi tag
+          createdAt: manga.createdAt,
         };
-        const titles = [manga.title, ...manga.altTitles];
-
-        languages.forEach((lang) => {
-          document[`titles_${lang}`] = [];
-        });
-
-        titles.forEach((title) => {
-          const lang = Object.keys(title)[0];
-          let value = Object.values(title)[0];
-
-          if (!languages.includes(lang)) {
-            document.titles.push(normalizeString(value));
-          } else {
-            if (lang === "en") value = normalizeString(value);
-            document[`titles_${lang}`].push(value);
-          }
-        });
         return document;
       })
     );
