@@ -89,6 +89,9 @@ export class MangaDexManga {
   @Prop({ required: true })
   createdAt!: Date;
 
+  @Prop({ required: true })
+  updatedAt!: Date;
+
   public getTitles(this: DocumentType<MangaDexManga>): string[] {
     const object = this.toObject();
     return union([

@@ -23,6 +23,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@directus/sdk@npm:^18.0.3":
+  version: 18.0.3
+  resolution: "@directus/sdk@npm:18.0.3"
+  checksum: 10c0/42b7dceff7e78a6989d8e000336dba60ce57387e9035463616ec556ca9d9c464963c8922a2fc59130faff6e1f585da2bde2e5612913da1532dc0fecb4f44e778
+  languageName: node
+  linkType: hard
+
 "@elastic/elasticsearch@npm:^8.17.0":
   version: 8.17.0
   resolution: "@elastic/elasticsearch@npm:8.17.0"
@@ -207,6 +214,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/f1b7c1b99fef9f2fe7f1985ef7426d0cebe48cd031f1780fcdc7451eec7e31ac97028f16f50121a59bcf53086a1fc8c856fd5b7d3e00970e43d92ae27d6b43dc
+  languageName: node
+  linkType: hard
+
+"@zennomi/mangadex-full-api@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@zennomi/mangadex-full-api@npm:6.0.1"
+  checksum: 10c0/4b96455403dc73fff1184dc4fe88af31808e53d5e720817774d95198b1ccfbd48104977f12e359ef04401451698ca2a53576dcfb256813c76c859ae6c30210ae
   languageName: node
   linkType: hard
 
@@ -515,17 +529,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cmanga@workspace:."
   dependencies:
+    "@directus/sdk": "npm:^18.0.3"
     "@elastic/elasticsearch": "npm:^8.17.0"
     "@typegoose/typegoose": "npm:^12.10.1"
     "@types/lodash": "npm:^4.17.13"
     "@types/node": "npm:^22.10.3"
     "@types/xml2js": "npm:^0"
+    "@zennomi/mangadex-full-api": "npm:^6.0.1"
     axios: "npm:^1.7.9"
     cheerio: "npm:^1.0.0"
     dotenv: "npm:^16.4.7"
+    exponential-backoff: "npm:^3.1.1"
     https-proxy-agent: "npm:^7.0.6"
     lodash: "npm:^4.17.21"
-    mangadex-full-api: "npm:^6.0.0"
     mongoose: "npm:^8.9.3"
     puppeteer: "npm:^23.11.1"
     puppeteer-real-browser: "npm:^1.3.22"
@@ -837,6 +853,13 @@ __metadata:
   version: 2.0.3
   resolution: "esutils@npm:2.0.3"
   checksum: 10c0/9a2fe69a41bfdade834ba7c42de4723c97ec776e40656919c62cbd13607c45e127a003f05f724a1ea55e5029a4cf2de444b13009f2af71271e42d93a637137c7
+  languageName: node
+  linkType: hard
+
+"exponential-backoff@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "exponential-backoff@npm:3.1.1"
+  checksum: 10c0/160456d2d647e6019640bd07111634d8c353038d9fa40176afb7cd49b0548bdae83b56d05e907c2cce2300b81cae35d800ef92fefb9d0208e190fa3b7d6bb579
   languageName: node
   linkType: hard
 
@@ -1159,13 +1182,6 @@ __metadata:
   version: 7.18.3
   resolution: "lru-cache@npm:7.18.3"
   checksum: 10c0/b3a452b491433db885beed95041eb104c157ef7794b9c9b4d647be503be91769d11206bb573849a16b4cc0d03cbd15ffd22df7960997788b74c1d399ac7a4fed
-  languageName: node
-  linkType: hard
-
-"mangadex-full-api@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "mangadex-full-api@npm:6.0.0"
-  checksum: 10c0/8488835713430a721341d1500412d26550d6fbc89dbd536721c6eeb5ef17c0e394b039748d463c51c81d83f13d68d98ec56bf3a0d612cec31392d21699652d90
   languageName: node
   linkType: hard
 
