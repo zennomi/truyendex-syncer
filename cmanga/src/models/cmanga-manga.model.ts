@@ -12,6 +12,12 @@ export class CmangaManga {
   name!: string;
 
   @Prop({ required: true })
+  source!: string;
+
+  @Prop({ required: true })
+  avatar!: string;
+
+  @Prop({ required: true })
   name_other!: string[];
 }
 

@@ -1,5 +1,11 @@
 import { MONGODB_COLLECTION_NAME } from "@/constants";
-import { getModelForClass, modelOptions, Prop } from "@typegoose/typegoose";
+import {
+  DocumentType,
+  getModelForClass,
+  modelOptions,
+  Prop,
+} from "@typegoose/typegoose";
+import { union } from "lodash";
 
 @modelOptions({ schemaOptions: { _id: false } })
 class Title {
@@ -25,6 +31,14 @@ export class CuuTruyenManga {
 
   @Prop({ required: true })
   cover_url!: string;
+
+  @Prop({ required: true })
+  created_at!: string;
+
+  public getTitles(this: DocumentType<CuuTruyenManga>): string[] {
+    const object = this.toObject();
+    return union([object.name, ...object.titles.map((t) => t.name)]);
+  }
 }
 
 export const CuuTruyenMangaModel = getModelForClass(CuuTruyenManga, {
