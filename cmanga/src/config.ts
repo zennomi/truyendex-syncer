@@ -15,6 +15,10 @@ const createConfigFromEnvironment = (environment: NodeJS.ProcessEnv) => {
     ELASTICSEARCH_NODE: z.string().default("http://localhost:9200"),
     ELASTICSEARCH_USERNAME: z.string().default("elastic"),
     ELASTICSEARCH_PASSWORD: z.string().default("changeme"),
+
+    DIRECTUS_URL: z.string(),
+    DIRECTUS_ADMIN_EMAIL: z.string(),
+    DIRECTUS_ADMIN_PASSWORD: z.string(),
   });
 
   return {

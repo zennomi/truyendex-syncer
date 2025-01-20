@@ -6,10 +6,13 @@ export const mongooseWrapper = (func: Function) => {
     .connect(
       `mongodb://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.MONGO_HOST}:${config.MONGO_PORT}/${config.MONGO_DATABASE}`
     )
-    .then(() => {
+    .then(async () => {
       console.info("Mongo connected");
-
-      func();
+      try {
+        await func();
+      } catch (error) {
+        console.error(error);
+      }
     });
 };
 

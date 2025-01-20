@@ -22,6 +22,9 @@ export class CuuTruyenManga {
 
   @Prop({ default: false })
   mapped?: boolean;
+
+  @Prop({ required: true })
+  cover_url!: string;
 }
 
 export const CuuTruyenMangaModel = getModelForClass(CuuTruyenManga, {

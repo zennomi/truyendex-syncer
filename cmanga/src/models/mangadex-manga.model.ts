@@ -57,10 +57,24 @@ class RelatedMangaObject {
   adapted_from!: RelatedManga[];
 }
 
-@index(
-  { noStemmingTitles: "text", stemmingTitles: "text" },
-  { default_language: "none" }
-)
+@modelOptions({ schemaOptions: { _id: false } })
+class MainCoverObject {
+  @Prop({ required: true })
+  id!: string;
+
+  @Prop({ required: true })
+  volume!: string;
+
+  @Prop({ required: true })
+  fileName!: string;
+
+  @Prop({ required: true })
+  createdAt!: Date;
+
+  @Prop({ required: true })
+  updatedAt!: Date;
+}
+
 export class MangaDexManga {
   @Prop({ required: true })
   _id!: string;
@@ -85,6 +99,9 @@ export class MangaDexManga {
 
   @Prop({ required: false })
   normalizedTitles?: string[];
+
+  @Prop({ required: true })
+  mainCover!: MainCoverObject | null;
 
   @Prop({ required: true })
   createdAt!: Date;

@@ -1,19 +1,17 @@
-import { MANGA_SOURCE } from "@/constants";
 import {
   CuuTruyenManga,
   CuuTruyenMangaModel,
   MangaDexMangaModel,
-  MangaMappingModel,
 } from "@/models";
 import { mongooseWrapper, normalizeString } from "@/utils";
 import { searchMangaTitles } from "@/utils/elasticsearch";
 import { DocumentType } from "@typegoose/typegoose";
 import { union } from "lodash";
+import { map, mapMultiple } from "./directus/utils";
 
 mongooseWrapper(async () => {
-  // await normalizedTitlesFieldMangaDexManga();
   let skip = 0;
-  const limit = 500;
+  const limit = 100;
 
   while (true) {
     const chunk = await CuuTruyenMangaModel.find({}, {}, { skip, limit });
@@ -24,7 +22,9 @@ mongooseWrapper(async () => {
     }
     console.info("Skip ", skip);
 
-    await Promise.all(chunk.map((manga) => process(manga)));
+    const maps = await Promise.all(chunk.map((manga) => process(manga)));
+
+    await mapMultiple(maps.filter((m) => !!m));
 
     skip += limit;
   }
@@ -34,12 +34,12 @@ async function process(manga: DocumentType<CuuTruyenManga>) {
   const normalizedTitles = [manga.name, ...manga.titles.map((t) => t.name)];
   const result = await findMangaDexMangaByTitles(normalizedTitles);
   if (!result) return;
-  await MangaMappingModel.map(
-    { source: MANGA_SOURCE.MANGADEX, sourceId: result.result._id },
-    { source: MANGA_SOURCE.CUUTRUYEN, sourceId: manga._id }
-  );
-  manga.mapped = true;
-  await manga.save();
+
+  return {
+    from: { source: "mangadex", sourceId: result.result.id },
+    to: { source: "cuutruyen", sourceId: manga.id },
+    exact: result.mode === "exact" || result.mode === "match_phrase",
+  };
 
   // to log not sure result
   // if (result.mode !== "match" || result.score >= 40) return;
