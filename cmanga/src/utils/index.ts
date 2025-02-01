@@ -1,5 +1,6 @@
 export * from "./mongoose";
 export * from "./puppeteer";
+export * from "./pg";
 // export * from "./milvus";
 
 export function delay(secs: number) {

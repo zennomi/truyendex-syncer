@@ -14,6 +14,10 @@ const directusClient = createDirectus(config.DIRECTUS_URL)
   .with(authentication())
   .with(rest());
 
+const productDirectusClient = createDirectus(config.PRODUCTION_DIRECTUS_URL)
+  .with(authentication())
+  .with(rest());
+
 export const getAuthenticatedClient = async () => {
   const { access_token } = await directusClient.login(
     config.DIRECTUS_ADMIN_EMAIL,
@@ -23,6 +27,17 @@ export const getAuthenticatedClient = async () => {
   directusClient.setToken(access_token);
 
   return directusClient;
+};
+
+export const getProductAuthenticatedClient = async () => {
+  const { access_token } = await productDirectusClient.login(
+    config.PRODUCTION_DIRECTUS_ADMIN_EMAIL,
+    config.PRODUCTION_DIRECTUS_ADMIN_PASSWORD
+  );
+
+  productDirectusClient.setToken(access_token);
+
+  return productDirectusClient;
 };
 
 export const mapMultiple = async (
@@ -52,15 +67,21 @@ export const map = async (
     await client.request(
       readSingleton("title_variant", {
         filter: {
-          source_id: { _eq: from.sourceId },
-          source: { _eq: from.source },
+          _and: [
+            { source_id: { _eq: from.sourceId } },
+            { source: { _eq: from.source } },
+            { status: { _eq: "published" } },
+            { title: { _null: false } },
+          ],
         },
       })
     )
   )[0];
 
   if (!fromVariant) {
-    console.error(`Not found from variant ${from.source} ${from.sourceId}`);
+    console.error(
+      `Not found unmapped from variant ${from.source} ${from.sourceId}`
+    );
     return;
   }
 
@@ -68,8 +89,21 @@ export const map = async (
     await client.request(
       readSingleton("title_variant", {
         filter: {
-          source_id: { _eq: to.sourceId },
-          source: { _eq: to.source },
+          _and: [
+            { source_id: { _eq: from.sourceId } },
+            { source: { _eq: from.source } },
+            {
+              _or: [
+                {
+                  _and: [
+                    { status: { _eq: "published" } },
+                    { title: { _null: true } },
+                  ],
+                },
+                { status: { _eq: "draft" } },
+              ],
+            },
+          ],
         },
       })
     )

@@ -19,6 +19,16 @@ const createConfigFromEnvironment = (environment: NodeJS.ProcessEnv) => {
     DIRECTUS_URL: z.string(),
     DIRECTUS_ADMIN_EMAIL: z.string(),
     DIRECTUS_ADMIN_PASSWORD: z.string(),
+
+    PRODUCTION_DIRECTUS_URL: z.string(),
+    PRODUCTION_DIRECTUS_ADMIN_EMAIL: z.string(),
+    PRODUCTION_DIRECTUS_ADMIN_PASSWORD: z.string(),
+
+    DB_USER: z.string(),
+    DB_HOST: z.string(),
+    DB_DATABASE: z.string(),
+    DB_PASSWORD: z.string(),
+    DB_PORT: z.number(),
   });
 
   return {
