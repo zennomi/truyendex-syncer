@@ -29,6 +29,8 @@ const createConfigFromEnvironment = (environment: NodeJS.ProcessEnv) => {
     DB_DATABASE: z.string(),
     DB_PASSWORD: z.string(),
     DB_PORT: z.number(),
+
+    ROTATING_PROXY_URL: z.string(),
   });
 
   return {
