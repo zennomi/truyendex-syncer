@@ -4,6 +4,7 @@ export const MONGODB_COLLECTION_NAME = {
   MANGADEX_MANGA: "mangadex_mangas",
   EXHENTAI_GALLERY: "exhentai_galleries",
   MANGA_MAPPING: "manga_mappings",
+  VNHENTAI_MANGA: "vnhentai_mangas",
 };
 
 export const ES_INDEX_NAME = {
@@ -14,4 +15,5 @@ export enum MANGA_SOURCE {
   CUUTRUYEN = "CUUTRUYEN",
   MANGADEX = "MANGADEX",
   CMANGA = "CMANGA",
+  EXHENTAI = "EXHENTAI",
 }

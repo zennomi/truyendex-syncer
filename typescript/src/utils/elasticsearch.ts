@@ -129,21 +129,50 @@ export async function indexMangaTitles(
   );
 }
 
-export async function searchMangaTitles(query: string) {
+export async function searchMangaTitles(
+  query: string,
+  source?: MANGA_SOURCE,
+  threhold = 33
+) {
   // phrase case
   let result = await elasticClient.search({
     index: ES_INDEX_NAME.MANGA_TITLE,
-    query: {
-      nested: {
-        path: "titles",
-        query: {
-          match_phrase: {
-            "titles.title": query,
+    query: source
+      ? {
+          bool: {
+            must: [
+              {
+                nested: {
+                  path: "titles",
+                  query: {
+                    match_phrase: {
+                      "titles.title": query,
+                    },
+                  },
+                  score_mode: "max",
+                },
+              },
+            ],
+            filter: [
+              {
+                term: {
+                  source: source,
+                },
+              },
+            ],
+          },
+        }
+      : {
+          nested: {
+            path: "titles",
+            query: {
+              match_phrase: {
+                "titles.title": query,
+              },
+            },
+            score_mode: "max", // Use the best score from any array element
           },
         },
-        score_mode: "max", // Use the best score from any array element
-      },
-    },
     sort: [{ _score: { order: "desc" } }, { createdAt: { order: "desc" } }],
     size: 1,
   });
@@ -154,25 +183,49 @@ export async function searchMangaTitles(query: string) {
   // match
   result = await elasticClient.search({
     index: ES_INDEX_NAME.MANGA_TITLE,
-    query: {
-      nested: {
-        path: "titles",
-        query: {
-          match: {
-            "titles.title": query,
+    query: source
+      ? {
+          bool: {
+            must: [
+              {
+                nested: {
+                  path: "titles",
+                  query: {
+                    match: {
+                      "titles.title": query,
+                    },
+                  },
+                  score_mode: "max", // Use the best score from any array element
+                },
+              },
+            ],
+            filter: [
+              {
+                term: {
+                  source: source,
+                },
+              },
+            ],
+          },
+        }
+      : {
+          nested: {
+            path: "titles",
+            query: {
+              match: {
+                "titles.title": query,
+              },
+            },
+            score_mode: "max", // Use the best score from any array element
           },
         },
-        score_mode: "max", // Use the best score from any array element
-      },
-    },
     explain: true,
     sort: [{ _score: { order: "desc" } }, { createdAt: { order: "desc" } }],
     size: 1,
   });
 
   if (result.hits.hits.length > 0) {
-    // threhold is 20
-    if (!result.hits.hits[0]._score || result.hits.hits[0]._score <= 33)
+    if (!result.hits.hits[0]._score || result.hits.hits[0]._score <= threhold)
       return null;
 
     const analyzeResult = await elasticClient.indices.analyze({

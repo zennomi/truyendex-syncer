@@ -23,3 +23,7 @@ export function normalizeString(str: string) {
   // return
   return str;
 }
+
+export function removeBrackets(text: string): string {
+  return text.replace(/\[.*?\]|\(.*?\)/g, "").trim();
+}

@@ -19,7 +19,7 @@ mongooseWrapper(async () => {
     MONGODB_COLLECTION_NAME.EXHENTAI_GALLERY
   );
 
-  let cursor = "1929288";
+  let cursor = "";
 
   while (true) {
     console.log("Cursor: ", cursor);
