@@ -31,6 +31,10 @@ const createConfigFromEnvironment = (environment: NodeJS.ProcessEnv) => {
     DB_PORT: z.number(),
 
     ROTATING_PROXY_URL: z.string(),
+
+    RAPIDAPI_KEY: z.string(),
+
+    EXHENTAI_COOKIE: z.string(),
   });
 
   return {

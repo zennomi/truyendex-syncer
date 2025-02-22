@@ -1,6 +1,11 @@
 export * from "./mongoose";
 export * from "./puppeteer";
 export * from "./pg";
+export * from "./rapidapi";
+export * from "./hentag";
+export * from "./axios";
+export * from "./zip";
+export * from "./image";
 // export * from "./milvus";
 
 export function delay(secs: number) {

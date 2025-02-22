@@ -13,7 +13,7 @@ import { union } from "lodash";
 
 mongooseWrapper(async () => {
   let skip = 0;
-  const limit = 100;
+  const limit = 50;
 
   while (true) {
     const chunk = await VnHentaiMangaModel.find({}, {}, { skip, limit });
@@ -24,9 +24,8 @@ mongooseWrapper(async () => {
     }
     console.info("Skip ", skip);
 
-    const maps = await Promise.all(chunk.map((manga) => process(manga)));
+    await Promise.all(chunk.map((manga) => process(manga)));
 
-    // return;
     skip += limit;
   }
 });
@@ -40,19 +39,22 @@ async function process(manga: DocumentType<VnHentaiManga>) {
   const result = await findExhentaiByTitles(normalizedTitles);
   if (!result) return;
 
+  manga.refExhentai = result.result;
+  await manga.save();
+
   // to log not sure result
-  if (result.mode !== "match" || result.score >= 40) return;
+  // if (result.mode !== "match" || result.score >= 40) return;
 
-  console.log("======");
-  console.log("Score:", result.score);
-  console.log("Mode:", result.mode);
-  console.log("VnHentai:");
-  console.log(normalizedTitles);
+  // console.log("======");
+  // console.log("Score:", result.score);
+  // console.log("Mode:", result.mode);
+  // console.log("VnHentai:");
+  // console.log(normalizedTitles);
 
-  console.log("Exhentai:");
-  console.log(result.result.title);
+  // console.log("Exhentai:");
+  // console.log(result.result.title);
 
-  console.log("======");
+  // console.log("======");
 }
 
 async function findExhentaiByTitles(titles: string[]) {
@@ -61,7 +63,7 @@ async function findExhentaiByTitles(titles: string[]) {
   let results = [];
 
   for (const title of titles) {
-    const result = await searchMangaTitles(title, MANGA_SOURCE.EXHENTAI, 20);
+    const result = await searchMangaTitles(title, MANGA_SOURCE.EXHENTAI, 33);
 
     if (!result) continue;
 
