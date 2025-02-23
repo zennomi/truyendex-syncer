@@ -7,7 +7,7 @@ mongooseWrapper(async () => {
   const client = await getAuthenticatedClient();
 
   let skip = 0;
-  const limit = 200;
+  const limit = 50;
 
   while (true) {
     console.info("Skip: ", skip);

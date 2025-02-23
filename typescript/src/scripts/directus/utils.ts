@@ -79,9 +79,7 @@ export const map = async (
   )[0];
 
   if (!fromVariant) {
-    console.error(
-      `Not found unmapped from variant ${from.source} ${from.sourceId}`
-    );
+    console.error(`Not found from variant ${from.source} ${from.sourceId}`);
     return;
   }
 
@@ -90,8 +88,8 @@ export const map = async (
       readSingleton("title_variant", {
         filter: {
           _and: [
-            { source_id: { _eq: from.sourceId } },
-            { source: { _eq: from.source } },
+            { source_id: { _eq: to.sourceId } },
+            { source: { _eq: to.source } },
             {
               _or: [
                 {
@@ -110,7 +108,7 @@ export const map = async (
   )[0];
 
   if (!toVariant) {
-    console.error(`Not found to variant ${to.source} ${to.sourceId}`);
+    console.error(`Not found unmapped to variant ${to.source} ${to.sourceId}`);
     return;
   }
 
