@@ -9,7 +9,6 @@ import { randomInt } from "crypto";
 // ts-node -r tsconfig-paths/register src/scripts/exhentai/upload-vnhentai.script.ts
 mongooseWrapper(async () => {
   if (!process.env.VIHENTAI_PATH) throw new Error("VIHENTAI_PATH not found");
-  let skip = 0;
 
   while (true) {
     const chunk = await VnHentaiMangaModel.find(
@@ -21,14 +20,13 @@ mongooseWrapper(async () => {
         refExhentai: null,
       },
       {},
-      { skip, limit: 1 }
+      { limit: 1 }
     );
 
     if (chunk.length === 0) {
       console.info("Done");
       return;
     }
-    console.info("Skip ", skip);
 
     try {
       await processManga(chunk[0]);
@@ -38,8 +36,6 @@ mongooseWrapper(async () => {
     }
 
     // return;
-
-    skip += 1;
   }
 });
 
@@ -101,7 +97,7 @@ async function processManga(manga: DocumentType<VnHentaiManga>) {
 
   // clean
   console.debug(`Delete ${zipPath} and ${copiedSourcePath}`);
-  await fs.rm(copiedSourcePath, { recursive: true });
+  await fs.rm(sourcePath, { recursive: true });
   await fs.unlink(zipPath);
 
   await reorderGellery({ ulgid, autosort: "natural" });
@@ -111,7 +107,7 @@ async function processManga(manga: DocumentType<VnHentaiManga>) {
 }
 
 function fixTitle(title: string) {
-  title = title.replace(/English/g, "Vietnamese");
+  title = title.replace(/English/g, "Vietnamese Tiếng Việt");
   title = title.replace(/fakku!/gi, "");
   title = title.replace(/fakku/gi, "");
   title = title.replace(/irodori comics/gi, "");
